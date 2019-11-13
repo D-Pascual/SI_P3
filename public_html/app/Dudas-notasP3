@@ -1,0 +1,18 @@
+-Comandos:
+
+Crear db:
+    createdb –U alumnodb si1
+Volcar dump a Posgres:
+    gunzip –c dump_v1.3.sql.gz | psql –U alumnodb si1
+Ejecutar script sql:
+    psql -h localhost -d si1 -U alumnodb -f actualiza.sql
+
+Info util:
+    -On delete, on update: https://es.stackoverflow.com/questions/105890/que-significa-cascade-set-null-restrict-no-action-en-mysql/105921#105921
+
+-Dudas:
+
+    -Eliminar en cascada para multievaluados, y set null/noaction o cascade(on delete) y 
+        cascade(on update) para actormovies? O si hay que dejarlo como está (o triggers)
+    -Match simple o match full? relacionado con el punto anterior?
+    -Un actor puede hacer varios personajes en una pelicula?
