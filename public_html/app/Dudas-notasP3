@@ -1,9 +1,9 @@
 -Comandos:
 
 Crear db:
-    createdb –U alumnodb si1
+    createdb -U alumnodb si1
 Volcar dump a Posgres:
-    gunzip –c dump_v1.3.sql.gz | psql –U alumnodb si1
+    gunzip -c dump_v1.3.sql.gz | psql -U alumnodb si1
 Ejecutar script sql:
     psql -h localhost -d si1 -U alumnodb -f actualiza.sql
 
