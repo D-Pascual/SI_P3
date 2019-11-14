@@ -1,7 +1,8 @@
 -Comandos:
 
-Crear db:
+Crear db/drop:
     createdb -U alumnodb si1
+    dropdb -U alumnodb si1
 Volcar dump a Posgres:
     gunzip -c dump_v1.3.sql.gz | psql -U alumnodb si1
 Ejecutar script sql:
