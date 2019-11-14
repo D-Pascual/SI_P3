@@ -31,9 +31,15 @@ ALTER TABLE public.imdb_actormovies
 ALTER TABLE public.imdb_directormovies
     DROP CONSTRAINT imdb_directormovies_movieid_fkey,
     ADD CONSTRAINT imdb_directormovies_movieid_fkey FOREIGN KEY (movieid) 
-        REFERENCES public.imdb_movies (movieid) MATCH SIMPLE
-        ON UPDATE CASCADE ON DELETE SET NULL,
+        REFERENCES public.imdb_movies (movieid) MATCH SIMPLE --revisar match
+        ON UPDATE CASCADE ON DELETE SET NULL, --revisar cascade set null
     DROP CONSTRAINT imdb_directormovies_directorid_fkey,
     ADD CONSTRAINT imdb_directormovies_directorid_fkey FOREIGN KEY (directorid) 
         REFERENCES public.imdb_directors (directorid) MATCH SIMPLE
         ON UPDATE CASCADE ON DELETE SET NULL;
+
+--Añadir foreign key a inventory
+ALTER TABLE public.inventory
+    ADD CONSTRAINT inventory_prod_id_fkey FOREIGN KEY (prod_id) 
+        REFERENCES public.products (prod_id) MATCH SIMPLE --revisar match
+        ON UPDATE CASCADE ON DELETE SET NULL; --revisar cascade set null
