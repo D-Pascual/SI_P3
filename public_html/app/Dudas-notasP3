@@ -17,3 +17,4 @@ Info util:
     -Match simple o match full? relacionado con el punto anterior?
     -Un actor puede hacer varios personajes en una pelicula?
     -Relacion entre productos e inventory, entidad debil? ISA?
+    -orderdetail: claves primarias? Key (orderid, prod_id)=(176146, 6038) is duplicated.
