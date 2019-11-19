@@ -46,4 +46,19 @@ ADD CONSTRAINT orderdetail_prod_id_fkey FOREIGN KEY (prod_id)
 ALTER TABLE public.orders
 ADD CONSTRAINT orders_customerid_fkey FOREIGN KEY (customerid) 
     REFERENCES public.customers (customerid) MATCH SIMPLE 
-    ON UPDATE NO ACTION ON DELETE NO ACTION; 
+    ON UPDATE NO ACTION ON DELETE NO ACTION;
+    
+--Añadir Proc. almacenado setOrderAmount
+CREATE PROCEDURE setOrderAmount() 
+LANGUAGE plpgsql
+AS $$    
+BEGIN
+    UPDATE public.orders as ORD
+    SET netamount = SUB.na_sum
+    FROM (
+        SELECT SUM(price) as na_sum, orderid 
+        FROM public.orderdetail
+        GROUP BY orderid
+    ) as SUB
+    WHERE ORD.orderid = SUB.orderid;
+END $$;

@@ -5,11 +5,12 @@ Crear db/drop:
     dropdb -U alumnodb si1
 Volcar dump a Posgres:
     gunzip -c dump_v1.3.sql.gz | psql -U alumnodb si1
-Ejecutar script sql:
+Ejecutar scripts sql:
     psql -h localhost -d si1 -U alumnodb -f actualiza.sql
 
 Info util:
     -On delete, on update: https://es.stackoverflow.com/questions/105890/que-significa-cascade-set-null-restrict-no-action-en-mysql/105921#105921
 
 -Dudas:
-
+    -Error sintaxis near procedure
+    -Por que update..set..from en vez de update..set..(select..)
