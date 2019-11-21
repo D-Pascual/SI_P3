@@ -7,7 +7,7 @@ CREATE OR REPLACE FUNCTION getTopMonths(imp integer, prods integer)   RETURNS TA
 $func$
         BEGIN
     RETURN QUERY
-    SELECT date_part('year', orderdate), date_part('month', orderdate), SUM(TAX), count(prod_id) as s -- SUSTITUIR SUM(TAX) por SUM(TOTALAMOUNT)
+    SELECT date_part('year', orderdate), date_part('month', orderdate), SUM(totalamount), count(prod_id) as s 
     FROM orders
     INNER JOIN orderdetail
     ON orders.orderid=orderdetail.orderid
@@ -17,4 +17,4 @@ $func$
         END;
 $func$  LANGUAGE plpgsql;
 
-SELECT * FROM getTopMonths(1, 1);
+SELECT * FROM getTopMonths(200000, 12000);
