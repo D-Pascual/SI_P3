@@ -1,6 +1,6 @@
 -- Agrupados duplicados
 INSERT INTO public.orderdetail
-SELECT orderid, prod_id, price, SUM(price)
+SELECT orderid, prod_id, price, SUM(quantity)
 FROM public.orderdetail
 GROUP BY orderid, prod_id, price
 HAVING COUNT(*) > 1;
@@ -12,6 +12,7 @@ FROM public.orderdetail
 GROUP BY orderid, prod_id, price
 HAVING COUNT(*) > 1
 );
+
 
 --Añadir primary y foreign key a actormovies 
 ALTER TABLE public.imdb_actormovies
