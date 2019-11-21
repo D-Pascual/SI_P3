@@ -1,20 +1,17 @@
 -- Agrupados duplicados
 INSERT INTO public.orderdetail
-SELECT orderid, prod_id, price, COUNT(*)
+SELECT orderid, prod_id, price, SUM(price)
+FROM public.orderdetail
+GROUP BY orderid, prod_id, price
+HAVING COUNT(*) > 1;
+
+DELETE FROM public.orderdetail
+WHERE orderid IN (
+SELECT orderid
 FROM public.orderdetail
 GROUP BY orderid, prod_id, price
 HAVING COUNT(*) > 1
-
-DELETE FROM public.orderdetail
-WHERE quantity < 2 AND orderid IN (
-    SELECT orderid
-    FROM public.orderdetail
-    WHERE (orderid, prod_id) IN (
-        SELECT orderid, prod_id
-        FROM public.orderdetail
-        GROUP BY orderid, prod_id
-        HAVING COUNT(*) > 1
-        ORDER BY orderid));
+);
 
 --Añadir primary y foreign key a actormovies 
 ALTER TABLE public.imdb_actormovies
@@ -47,18 +44,3 @@ ALTER TABLE public.orders
 ADD CONSTRAINT orders_customerid_fkey FOREIGN KEY (customerid) 
     REFERENCES public.customers (customerid) MATCH SIMPLE 
     ON UPDATE NO ACTION ON DELETE NO ACTION;
-    
---Añadir Proc. almacenado setOrderAmount
-CREATE PROCEDURE setOrderAmount() 
-LANGUAGE plpgsql
-AS $$    
-BEGIN
-    UPDATE public.orders as ORD
-    SET netamount = SUB.na_sum
-    FROM (
-        SELECT SUM(price) as na_sum, orderid 
-        FROM public.orderdetail
-        GROUP BY orderid
-    ) as SUB
-    WHERE ORD.orderid = SUB.orderid;
-END $$;
