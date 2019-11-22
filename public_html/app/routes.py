@@ -246,7 +246,6 @@ def add_to_cart(id):
 
     flash('Elemento añadido al carrito')
 
-
     return redirect(url_for('carrito'))
 
 
