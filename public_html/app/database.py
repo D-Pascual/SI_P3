@@ -23,14 +23,13 @@ def db_check_user(username):
         # conexion a la base de datos
         db_conn = None
         db_conn = db_engine.connect()
-        check_login = select([db_table_customers.c.customerid, db_table_customers.c.username]) \
-                          .where(text("username = :username"))
+        check_login = db_table_customers.select().where(text("username = :username"))
         db_result = db_conn.execute(check_login, {'username': username})
 
         db_conn.close()
 
-        rows = db_result.fetchall()
-        if len(rows):
+        rows = db_result.fetchall() 
+        if len(rows): # Si la query no esta vacia
             return True
         else:
             return False
@@ -52,17 +51,17 @@ def db_check_login(username, password):
         db_conn = None
         db_conn = db_engine.connect()
 
-        check_login = select([db_table_customers.c.customerid, db_table_customers.c.username, db_table_customers.c.password]) \
-                          .where(text("username = :username AND password = :password"))
+        check_login = select([db_table_customers.c.customerid]) \
+                                        .where(text("username = :username AND password = :password"))
         db_result = db_conn.execute(check_login, {'username': username, 'password': password})
 
         db_conn.close()
 
-        rows = db_result.fetchall()
-        if len(rows):
-            return True
+        row = db_result.fetchone()
+        if row: # Si la query no esta vacia
+            return row[0]
         else:
-            return False
+            return None
 
     except:
         if db_conn is not None:
