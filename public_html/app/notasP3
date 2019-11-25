@@ -17,3 +17,8 @@ Info util:
 
 -Dudas:
     -Por que update..set..from en vez de update..set..(select..)
+
+-Hacer:
+    -Hacer username unique
+    -No hay saldo
+    -Portada: top peliculas ultimos 3 años

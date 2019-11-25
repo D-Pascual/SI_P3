@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from app import app
+from app import database
 from flask import render_template, request, url_for, redirect, session, make_response, Flask, jsonify, request
 import json
 import os
@@ -130,26 +131,36 @@ def registrar():
 def login():
     if request.method == "POST":
         usuario = request.form['usuario']
-        password = hashlib.md5(
-            request.form['password'].encode('utf-8')).hexdigest()
+        # password = hashlib.md5(
+        #     request.form['password'].encode('utf-8')).hexdigest()
+        password = request.form['password']
 
-        directorio = os.path.join(
-            app.root_path, 'usuarios', usuario, 'datos.dat')
-        try:
-            with open(directorio, "r") as data_file:
-                data_dictionary = ast.literal_eval(data_file.read())
-        except IOError:
+        # directorio = os.path.join(
+        #     app.root_path, 'usuarios', usuario, 'datos.dat')
+        # try:
+        #     with open(directorio, "r") as data_file:
+        #         data_dictionary = ast.literal_eval(data_file.read())
+        # except IOError:
+        #     flash('¡El usuario no existe!')
+        #     flash('Puedes registrarte en esta misma página.')
+        #     return redirect(url_for('sesion'))
+
+        # if(password != data_dictionary.get('password')):
+        #     flash('¡Contraseña errónea!')
+        #     return redirect(url_for('sesion'))
+
+        if database.db_check_user(usuario) is False:
             flash('¡El usuario no existe!')
             flash('Puedes registrarte en esta misma página.')
             return redirect(url_for('sesion'))
 
-        if(password != data_dictionary.get('password')):
+        if database.db_check_login(usuario, password) is False:
             flash('¡Contraseña errónea!')
             return redirect(url_for('sesion'))
 
         session['logged_in'] = True
         session['usuario'] = request.form['usuario']
-        session["saldo"] = data_dictionary["saldo"]
+        #session["saldo"] = data_dictionary["saldo"]
         session.modified = True
 
         resp = make_response(redirect(url_for('index')))
@@ -174,20 +185,22 @@ def logout(user):
 
 @app.route("/carrito")
 def carrito():
-    catalogue_data = open(os.path.join(
-        app.root_path, 'catalogue/catalogo.json'), encoding="utf-8").read()
-    catalogue = json.loads(catalogue_data)
+    # catalogue_data = open(os.path.join(
+    #     app.root_path, 'catalogue/catalogo.json'), encoding="utf-8").read()
+    # catalogue = json.loads(catalogue_data)
 
-    ids_in_cart = session.get('cart', [])
-    movies = []
-    precio = 0
+    # ids_in_cart = session.get('cart', [])
+    # movies = []
+    # precio = 0
 
-    for x in catalogue['peliculas']:
-        if x['id'] in ids_in_cart:
-            movies.append(x)
-            precio += x['precio']
-    session['total'] = precio
-    session.modified = True
+    # for x in catalogue['peliculas']:
+    #     if x['id'] in ids_in_cart:
+    #         movies.append(x)
+    #         precio += x['precio']
+    # session['total'] = precio
+    # session.modified = True
+    order = database.db_carrito()
+    details
 
     return render_template("carrito.html", movies=movies, precio=precio)
 
