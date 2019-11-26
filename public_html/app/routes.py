@@ -84,7 +84,7 @@ def sesion():
 def registrar():
     if request.method == "POST":
         usuario = {"username": request.form['usuario'],
-                   "password":  hashlib.md5(request.form['password'].encode('utf-8')).hexdigest(),
+                   "password": request.form['password'],
                    "email": request.form['email'],
                    "genero": request.form['genero'],
                    "edad": request.form['edad'],
@@ -92,27 +92,27 @@ def registrar():
                    "saldo":  randrange(101),
                    "nPedidos": 0}
 
-        directorio = os.path.join(
-            app.root_path, 'usuarios', request.form['usuario'])
-        try:
-            os.makedirs(directorio)
-        except OSError:
-            flash('¡El usuario ya existe!')
-            return redirect(url_for('sesion'))
+        # directorio = os.path.join(
+        #     app.root_path, 'usuarios', request.form['usuario'])
+        # try:
+        #     os.makedirs(directorio)
+        # except OSError:
+        #     flash('¡El usuario ya existe!')
+        #     return redirect(url_for('sesion'))
 
-        directorio = os.path.join(
-            app.root_path, 'usuarios', request.form['usuario'], 'datos.dat')
-        data_file = open(directorio, "w")
-        data_file.write(str(usuario))
-        data_file.close()
+        # directorio = os.path.join(
+        #     app.root_path, 'usuarios', request.form['usuario'], 'datos.dat')
+        # data_file = open(directorio, "w")
+        # data_file.write(str(usuario))
+        # data_file.close()
 
-        directorio = os.path.join(
-            app.root_path, 'usuarios', request.form['usuario'], 'historial.json')
-        historial = open(directorio, "w")
-        json.dump({
-            "historial": []
-        }, historial)
-        historial.close()
+        # directorio = os.path.join(
+        #     app.root_path, 'usuarios', request.form['usuario'], 'historial.json')
+        # historial = open(directorio, "w")
+        # json.dump({
+        #     "historial": []
+        # }, historial)
+        # historial.close()
         
         
         session['logged_in'] = True

@@ -53,11 +53,29 @@
             Usuario:
             <input required type="text" name="usuario" placeholder="Escribe aquí" pattern="[^()/><\][\\\x22,;|]+" 
               title="No se puede dejar en blanco, ni usar estos carácteres prohibidos: ^()/><\\\\x22,;|"><br><br>
+            Nombre:
+            <input required type="text" name="nombre" placeholder="Escribe aquí" maxlength="50" pattern="[^()/><\][\\\x22,;|]+" 
+              title="No se puede dejar en blanco, ni usar estos carácteres prohibidos: ^()/><\\\\x22,;|"><br><br>
+            Apellidos:
+            <input required type="text" name="apellidos" placeholder="Escribe aquí" maxlength="50" pattern="[^()/><\][\\\x22,;|]+" 
+              title="No se puede dejar en blanco, ni usar estos carácteres prohibidos: ^()/><\\\\x22,;|"><br><br>
+            Direccion:
+            <input required type="text" name="direccion" placeholder="Escribe aquí" maxlength="50" pattern="[^()/><\][\\\x22,;|]+" 
+              title="No se puede dejar en blanco, ni usar estos carácteres prohibidos: ^()/><\\\\x22,;|"><br><br>
+            Region:
+            <input required type="text" name="region" placeholder="Escribe aquí" maxlength="50" pattern="[^()/><\][\\\x22,;|]+" 
+              title="No se puede dejar en blanco, ni usar estos carácteres prohibidos: ^()/><\\\\x22,;|"><br><br>
+            Pais:
+            <input required type="text" name="pais" placeholder="Escribe aquí" maxlength="50" pattern="[^()/><\][\\\x22,;|]+" 
+              title="No se puede dejar en blanco, ni usar estos carácteres prohibidos: ^()/><\\\\x22,;|"><br><br>
+            Ciudad:
+            <input required type="text" name="cuidad" placeholder="Escribe aquí" maxlength="50" pattern="[^()/><\][\\\x22,;|]+" 
+              title="No se puede dejar en blanco, ni usar estos carácteres prohibidos: ^()/><\\\\x22,;|"><br><br>
             Contraseña:
-            <input required id="clave" type="password" name="password" placeholder="Escribe aquí" pattern=".{8,}" title="Mínimo 8 caracteres"><br><br>
+            <input required id="clave" type="password" name="password" placeholder="Escribe aquí" maxlength="50" pattern=".{8,}" title="Mínimo 8 caracteres"><br><br>
             <span id = "mensaje"></span><br><br>
             Confirmación de contraseña:
-            <input required type="password" name="conf_password" placeholder="Escribe aquí"><br><br>
+            <input required type="password" name="conf_password" placeholder="Escribe aquí" maxlength="50"><br><br>
             Email:
             <input required type="email" name="email" placeholder="email@example.com"><br><br>
             Género:
@@ -67,8 +85,17 @@
             <br><br>
             Edad:
             <input required type="number" min="16" max="99" name="edad" ><br><br>
+            Tipo t. credito:
+            <select>
+              <option value="visa">Visa</option>
+              <option value="mastercard">Mastercard</option>
+              <option value="american">American Express</option>
+              <option value="dinners">Dinners</option>
+            </select><br><br>
             Tarjeta de credito:
-            <input required type="tel" name="tarjeta" maxlength="16" placeholder="0000111122223333" pattern="[0-9]{16}"><br><br>
+            <input required type="tel" name="tarjeta" maxlength="16" placeholder="0000111122223333" maxlength="50" pattern="[0-9]{16}"><br><br>
+            Caducidad tarjeta de credito:
+            <input required type="date" name="cardexpiration"><br><br>
             <input type="submit" class="busqueda" value="Registrarse" />
           </fieldset>
         </form>
