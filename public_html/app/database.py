@@ -74,6 +74,49 @@ def db_check_login(username, password):
         return 'Something is broken'
 
 
+def db_registro(usuario):
+    try:
+        # conexion a la base de datos
+        db_conn = None
+        db_conn = db_engine.connect()
+
+        stmt = customers.insert()
+        stmt = stmt.values({"username": usuario['username'], 
+                            "fisrtname": usuario['nombre'],
+                            "lastname": usuario['apellidos'],
+                            "adress1": usuario['direccion']
+                            "region": usuario['region']
+                            "country": usuario['pais']
+                            "city": usuario['ciudad']
+                            "password": usuario['password']
+                            "email": usuario['email']
+                            "gender": usuario['genero']
+                            "age": usuario['edad']},
+                            "creditcardtype": usuario['card_type'],
+                            "creditcard": usuario['tarjeta'],
+                            "creditcardexpiration": usuario['caducidad_tarjeta'])
+
+        db_conn.execute(stmt)
+
+        db_conn.close()
+
+        row = db_result.fetchone()
+        if row: # Si la query no esta vacia
+            return row[0]
+        else:
+            return None
+
+    except:
+        if db_conn is not None:
+            db_conn.close()
+        print("Exception in DB access:")
+        print("-"*60)
+        traceback.print_exc(file=sys.stderr)
+        print("-"*60)
+
+        return 'Something is broken'
+
+
 def db_carrito():
     try:
         # conexion a la base de datos

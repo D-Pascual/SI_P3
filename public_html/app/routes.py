@@ -84,13 +84,27 @@ def sesion():
 def registrar():
     if request.method == "POST":
         usuario = {"username": request.form['usuario'],
+                   "nombre": request.form['nombre'],
+                   "apellidos": request.form['apellidos'],
+                   "direccion": request.form['direccion'],
+                   "region": request.form['region'],
+                   "pais": request.form['pais'],
+                   "ciudad": request.form['ciudad'],
                    "password": request.form['password'],
                    "email": request.form['email'],
                    "genero": request.form['genero'],
                    "edad": request.form['edad'],
+                   "card_type": request.form['card_type'],
                    "tarjeta": request.form['tarjeta'],
+                   "caducidad_tarjeta": request.form['caducidad_tarjeta'],
                    "saldo":  randrange(101),
                    "nPedidos": 0}
+        
+        if db_check_user(usuario['username']) is True:
+            flash('¡El usuario ya existe!')
+            return redirect(url_for('sesion'))
+
+        db_registro(usuario)
 
         # directorio = os.path.join(
         #     app.root_path, 'usuarios', request.form['usuario'])
