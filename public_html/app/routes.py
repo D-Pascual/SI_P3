@@ -19,33 +19,35 @@ import datetime
 @app.route('/', methods=['POST', 'GET', 'PUT'])
 @app.route('/index', methods=['POST', 'GET', 'PUT'])
 def index():
-    catalogue_data = open(os.path.join(
-        app.root_path, 'catalogue/catalogo.json'), encoding="utf-8").read()
-    catalogue = json.loads(catalogue_data)
+    # catalogue_data = open(os.path.join(
+    #     app.root_path, 'catalogue/catalogo.json'), encoding="utf-8").read()
+    # catalogue = json.loads(catalogue_data)
 
-    if request.method == 'POST':
-        if 'Busqueda' in request.form:
-            pelicula = request.form['Busqueda']
-            movies = []
-            for x in catalogue['peliculas']:
-                if pelicula.lower() in x['titulo'].lower():
-                    movies.append(x)
-            if not movies:
-                flash('La búsqueda "' + pelicula + '" no ha producido resultados. Por favor, realiza otra búsqueda')
-                return render_template('index.html', title="Home", movies=catalogue['peliculas'], session=session)
-            return render_template('index.html', title="Home", movies=movies, session=session)
-        elif 'Filtrado' in request.form:
-            pelicula = request.form['Filtrado']
-            if pelicula == 'Filtrar por':
-                flash('Introduce un filtro válido')
-                return render_template('index.html', title="Home", movies=catalogue['peliculas'], session=session)
-            movies = []
-            for x in catalogue['peliculas']:
-                if pelicula.lower() in x['genero'].lower():
-                    movies.append(x)
-            return render_template('index.html', title="Home", movies=movies, session=session)
+    # if request.method == 'POST':
+    #     if 'Busqueda' in request.form:
+    #         pelicula = request.form['Busqueda']
+    #         movies = []
+    #         for x in catalogue['peliculas']:
+    #             if pelicula.lower() in x['titulo'].lower():
+    #                 movies.append(x)
+    #         if not movies:
+    #             flash('La búsqueda "' + pelicula + '" no ha producido resultados. Por favor, realiza otra búsqueda')
+    #             return render_template('index.html', title="Home", movies=catalogue['peliculas'], session=session)
+    #         return render_template('index.html', title="Home", movies=movies, session=session)
+    #     elif 'Filtrado' in request.form:
+    #         pelicula = request.form['Filtrado']
+    #         if pelicula == 'Filtrar por':
+    #             flash('Introduce un filtro válido')
+    #             return render_template('index.html', title="Home", movies=catalogue['peliculas'], session=session)
+    #         movies = []
+    #         for x in catalogue['peliculas']:
+    #             if pelicula.lower() in x['genero'].lower():
+    #                 movies.append(x)
+    #         return render_template('index.html', title="Home", movies=movies, session=session)
 
-    return render_template('index.html', title="Home", movies=catalogue['peliculas'], session=session)
+    top_last3years = database.db_topMovies_last3years()
+
+    return render_template('index.html', title="Home", top_movies=top_last3years, session=session)
 
 
 

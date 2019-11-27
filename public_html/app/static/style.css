@@ -177,12 +177,6 @@ nav ul {
     width: 300px;
 }
 
-.foto {
-    float: left;
-    padding: 5px;
-    width: 197px;
-}
-
 .navdiv {
     padding: 5px;
     width: 230px;
@@ -299,6 +293,17 @@ tr:nth-child(even) {
     left: 300px;
     background-color: #C1C1C1;
     border-style: double;
+}
+
+#top_movies{
+    text-align: center;
+    font-family: "Courier New", Times, serif;
+    font-size: 22px;
+    color: rgb(119, 12, 12);
+    text-transform: uppercase;
+    text-indent: 75px;
+    letter-spacing: 3px;
+    text-shadow: 1px 1px grey;
 }
 
 
