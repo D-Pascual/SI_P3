@@ -11,16 +11,16 @@
             <table>
                 {% if movies %}
                     <tr>
-                        <th>ID película</th>
-                        <th>Artículo</th>
+                        <th>Titulo</th>
+                        <th>Cantidad</th>
                         <th>Precio</th>
                         <th>Compra</th>
                         <th>Borrar</th>
                     </tr>
                     {% for item in movies %}
                         <tr>
-                            <td>{{ item.id }}</td>
                             <td>{{ item.titulo }}</td>
+                            <td>{{ item.cantidad }}</td>
                             <td>{{ item.precio }}€</td>
                             <td>
                                 <form action="{{ url_for('comprarElemento', id=item.id) }}">

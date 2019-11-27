@@ -160,7 +160,7 @@ def login():
             return redirect(url_for('sesion'))
 
         session['logged_in'] = True
-        session['user_id'] = usuario
+        session['user_id'] = user_id
         session['usuario'] = request.form['usuario']
         session["saldo"] = randrange(101)
         session.modified = True
@@ -187,6 +187,10 @@ def logout(user):
 
 @app.route("/carrito")
 def carrito():
+    if 'user_id' in session:
+        movies = database.db_carrito(session['user_id'])
+    else:
+        session['cart'].append(int(id))
     # catalogue_data = open(os.path.join(
     #     app.root_path, 'catalogue/catalogo.json'), encoding="utf-8").read()
     # catalogue = json.loads(catalogue_data)
@@ -201,11 +205,11 @@ def carrito():
     #         precio += x['precio']
     # session['total'] = precio
     # session.modified = True
-    order = database.db_carrito()
-    movies = []
-    for m in movies:
-        print(database.db_orderdetail_by_orderid(m.orderid))
+    if not movies:
+        movies = []
     precio = 0
+    for movie in movies:
+        precio += movie["precio"]*movie["cantidad"]
     return render_template("carrito.html", movies=movies, precio=precio)
 
 
@@ -251,21 +255,13 @@ def add_to_cart(id):
     if 'cart' not in session:
         session['cart'] = []
     if 'user_id' in session:
-        print('resultado', database.db_add_to_cart(id, session['user_id']))
-
-    catalogue_data = open(os.path.join(
-        app.root_path, 'catalogue/catalogo.json'), encoding="utf-8").read()
-    catalogue = json.loads(catalogue_data)
-    if int(id) in session['cart']:
-        flash('Este artículo ya está en el carrito')
-        for x in catalogue['peliculas']:
-            if x['id'] == int(id):
-                return redirect("/" + x['titulo'])
-    session['cart'].append(int(id))
+        database.db_add_to_cart(id, session['user_id'], 1)
+    else:
+        session['cart'].append(int(id))
 
     flash('Elemento añadido al carrito')
 
-    return redirect(url_for('carrito'))
+    return redirect(url_for('index'))
 
 
 @app.route('/borrarCarrito')

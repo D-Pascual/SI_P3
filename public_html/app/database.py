@@ -5,6 +5,7 @@ import sys, traceback
 from sqlalchemy import create_engine
 from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey, text
 from sqlalchemy.sql import select
+from datetime import date
 
 # configurar el motor de sqlalchemy
 db_engine = create_engine("postgresql://alumnodb:alumnodb@localhost/si1", echo=False)
@@ -111,18 +112,31 @@ def db_registro(usuario):
         return 'Something is broken'
 
 
-def db_carrito():
+def db_carrito(userid):
     try:
         # conexion a la base de datos
         db_conn = None
         db_conn = db_engine.connect()
-
-        query_carrito = "SELECT * FROM orders WHERE status=null"
+        movies = []
+        query_carrito = "SELECT * FROM orders WHERE status is null and customerid={}".format(userid)
         db_result = db_conn.execute(query_carrito)
-
+        row = db_result.fetchone()
+        if not row:
+            return None
+        query_carrito = "SELECT movietitle, quantity, orderdetail.price FROM orderdetail INNER JOIN products ON orderdetail.prod_id = products.prod_id INNER JOIN imdb_movies ON products.movieid = imdb_movies.movieid WHERE orderid = {}".format(row[0]) #row[0] = orderid
+        db_result = db_conn.execute(query_carrito)
+        rowDetail = db_result.fetchone()
+        while rowDetail:
+            movie = {
+                "titulo": rowDetail[0],
+                "cantidad": rowDetail[1],
+                "precio": rowDetail[2]
+            }
+            movies.append(movie)
+            rowDetail = db_result.fetchone()
         db_conn.close()
 
-        return  list(db_result)
+        return movies
     except:
         if db_conn is not None:
             db_conn.close()
@@ -157,21 +171,36 @@ def db_orderdetail_by_orderid(id):
         return 'Something is broken'
     return None
     
-def db_add_to_cart(id, customerid):
+def db_add_to_cart(id, customerid, quantity):
     try:
         # conexion a la base de datos
         db_conn = None
         db_conn = db_engine.connect()
         
-        query_carrito = "SELECT * FROM orders WHERE status is null and customerid = "
+        query_carrito = "SELECT * FROM orders WHERE status is null and customerid = {}".format(customerid)
         db_result = db_conn.execute(query_carrito)
-        print(list(db_result))
-        if not list(db_result):
-            print('hola')
-            query_carrito = "INSERT INTO orders (orderid, orderdate) VALUES(99999999, NOW())"
+        row = db_result.fetchone()
+        if not row: # si el usuario no tiene un carrito
+            query_carrito = "INSERT INTO orders (orderdate, status, customerid) VALUES (NOW(), null, {})".format(customerid)
+            db_conn.execute(query_carrito)
+            query_carrito = "SELECT * FROM orders WHERE status is null and customerid = {}".format(customerid)
             db_result = db_conn.execute(query_carrito)
+            row = db_result.fetchone()
+        query_carrito = "SELECT * FROM orderdetail WHERE prod_id = {} and orderid = {}".format(id, row[0]) #id = prod_id, row[0] = orderid
+        db_result = db_conn.execute(query_carrito)
+        rowDetail = db_result.fetchone()
+        if rowDetail:
+            query_carrito = "UPDATE orderdetail SET quantity={} WHERE orderid = {} and prod_id = {}".format(rowDetail[3]+quantity, rowDetail[0], id)
+            db_result = db_conn.execute(query_carrito)
+        else:
+            query_carrito = "SELECT price FROM products WHERE prod_id = {}".format(id) #id = prod_id, row[0] = orderid
+            db_result = db_conn.execute(query_carrito)
+            rowDetail = db_result.fetchone()
+            precio = rowDetail[0]
+            query_carrito = "INSERT INTO orderdetail (orderid, prod_id, price, quantity) VALUES ({}, {}, {}, {})".format(row[0], id, price, quantity)
+            db_conn.execute(query_carrito)
         db_conn.close()
-        return list(db_result)
+        return True
     except:
         if db_conn is not None:
             db_conn.close()
