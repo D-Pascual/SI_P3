@@ -293,8 +293,8 @@ def db_topMovies_last3years():
         # conexion a la base de datos
         db_conn = None
         db_conn = db_engine.connect()
-
-        statement = text("""SELECT p.prod_id, p.movieid, movietitle, description, year, sum(quantity) as sales
+        movies = []
+        statement = text("""SELECT p.prod_id, p.movieid, movietitle, description, year, sum(quantity) as sales, p.price
                             FROM products p
                             JOIN imdb_movies im ON p.movieid = im.movieid
                             JOIN orderdetail od ON p.prod_id = od.prod_id
@@ -305,10 +305,20 @@ def db_topMovies_last3years():
                             LIMIT 30;""")
 
         db_result = db_conn.execute(statement)
-
+        row = db_result.fetchone()
+        while row:
+            movie = {
+                "titulo": row[2],
+                "edicion": row[3],
+                "ventas": row[5],
+                "precio": row[6],
+                "prod_id": row[0]
+            }
+            movies.append(movie)
+            row = db_result.fetchone()
         db_conn.close()
 
-        return  list(db_result)
+        return movies
     except:
         if db_conn is not None:
             db_conn.close()
