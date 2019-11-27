@@ -1,6 +1,6 @@
 -- Añadir columna saldo a customers
 ALTER TABLE customers
-ADD COLUMN saldo numeric;
+ADD COLUMN saldo numeric DEFAULT random()*100;
 UPDATE customers SET saldo=random()*100;
 -- Agrupados duplicados orderdetail
 INSERT INTO public.orderdetail
