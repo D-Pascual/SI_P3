@@ -42,7 +42,7 @@ def db_check_user(username):
         traceback.print_exc(file=sys.stderr)
         print("-"*60)
 
-        return 'Something is broken'
+        return False
 
 
 def db_check_login(username, password):
@@ -59,7 +59,7 @@ def db_check_login(username, password):
 
         row = db_result.fetchone()
         if row: # Si la query no esta vacia
-            return row[0]
+            return row[0] # Devuelve usuario
         else:
             return None
 
@@ -71,7 +71,7 @@ def db_check_login(username, password):
         traceback.print_exc(file=sys.stderr)
         print("-"*60)
 
-        return 'Something is broken'
+        return None
 
 
 def db_registro(usuario):
@@ -155,6 +155,7 @@ def db_orderdetail_by_orderid(id):
         print("-"*60)
 
         return 'Something is broken'
+    return None
     
 def db_add_to_cart(id, customerid):
     try:
