@@ -69,7 +69,7 @@
             <input required type="text" name="pais" placeholder="Escribe aquí" maxlength="50" pattern="[^()/><\][\\\x22,;|]+" 
               title="No se puede dejar en blanco, ni usar estos carácteres prohibidos: ^()/><\\\\x22,;|"><br><br>
             Ciudad:
-            <input required type="text" name="cuidad" placeholder="Escribe aquí" maxlength="50" pattern="[^()/><\][\\\x22,;|]+" 
+            <input required type="text" name="ciudad" placeholder="Escribe aquí" maxlength="50" pattern="[^()/><\][\\\x22,;|]+" 
               title="No se puede dejar en blanco, ni usar estos carácteres prohibidos: ^()/><\\\\x22,;|"><br><br>
             Contraseña:
             <input required id="clave" type="password" name="password" placeholder="Escribe aquí" maxlength="50" pattern=".{8,}" title="Mínimo 8 caracteres"><br><br>
@@ -79,23 +79,22 @@
             Email:
             <input required type="email" name="email" placeholder="email@example.com"><br><br>
             Género:
-            <input type="radio" name="genero" value="masculino" checked="checked">Masculino
-            <input type="radio" name="genero" value="femenino">Femenino
-            <input type="radio" name="genero" value="otro">Otro
+            <input type="radio" name="genero" value="M" checked="checked">Masculino
+            <input type="radio" name="genero" value="F">Femenino
             <br><br>
             Edad:
             <input required type="number" min="16" max="99" name="edad" ><br><br>
             Tipo t. credito:
-            <select>
-              <option value="visa">Visa</option>
-              <option value="mastercard">Mastercard</option>
-              <option value="american">American Express</option>
-              <option value="dinners">Dinners</option>
+            <select name="card_type">
+              <option value="Visa">Visa</option>
+              <option value="Mastercard">Mastercard</option>
+              <option value="American">American Express</option>
+              <option value="Dinners">Dinners</option>
             </select><br><br>
             Tarjeta de credito:
             <input required type="tel" name="tarjeta" maxlength="16" placeholder="0000111122223333" maxlength="50" pattern="[0-9]{16}"><br><br>
             Caducidad tarjeta de credito:
-            <input required type="date" name="cardexpiration"><br><br>
+            <input required type="date" name="cardexpiration" min="2019-12-05"><br><br>
             <input type="submit" class="busqueda" value="Registrarse" />
           </fieldset>
         </form>

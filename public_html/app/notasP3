@@ -1,5 +1,8 @@
 -Comandos:
 
+source si1pyenv/bin/activate
+python3 -m app
+
 Crear db/drop:
     createdb -U alumnodb si1
     dropdb -U alumnodb si1
@@ -19,6 +22,9 @@ Info util:
     -Por que update..set..from en vez de update..set..(select..)
 
 -Hacer:
-    -Hacer username unique
-    -No hay saldo
+    -usernames repetidos
+    -saldo
     -Portada: top peliculas ultimos 3 años
+    -mejorar fecha registro
+    -manejar excepciones db
+    -arreglar css

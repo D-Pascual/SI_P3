@@ -96,15 +96,15 @@ def registrar():
                    "edad": request.form['edad'],
                    "card_type": request.form['card_type'],
                    "tarjeta": request.form['tarjeta'],
-                   "caducidad_tarjeta": request.form['caducidad_tarjeta'],
+                   "caducidad_tarjeta": request.form['cardexpiration'],
                    "saldo":  randrange(101),
                    "nPedidos": 0}
         
-        if db_check_user(usuario['username']) is True:
+        if database.db_check_user(usuario['username']) is True:
             flash('¡El usuario ya existe!')
             return redirect(url_for('sesion'))
 
-        db_registro(usuario)
+        database.db_registro(usuario)
 
         # directorio = os.path.join(
         #     app.root_path, 'usuarios', request.form['usuario'])
@@ -158,9 +158,9 @@ def login():
             return redirect(url_for('sesion'))
 
         session['logged_in'] = True
-        session['user_id'] = user_id
+        session['user_id'] = usuario
         session['usuario'] = request.form['usuario']
-        #session["saldo"] = data_dictionary["saldo"]
+        session["saldo"] = randrange(101)
         session.modified = True
 
         resp = make_response(redirect(url_for('index')))

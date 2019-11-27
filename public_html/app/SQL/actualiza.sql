@@ -45,3 +45,12 @@ ALTER TABLE public.orders
 ADD CONSTRAINT orders_customerid_fkey FOREIGN KEY (customerid) 
     REFERENCES public.customers (customerid) MATCH SIMPLE 
     ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+--Resincronizar sequence idcustomers
+BEGIN;
+    -- protect against concurrent inserts while you update the counter
+LOCK TABLE customers IN EXCLUSIVE MODE;
+    -- Update the sequence
+SELECT setval('customers_customerid_seq'::regclass, 
+	      COALESCE((SELECT MAX(customerid)+1 FROM customers), 1), false);
+COMMIT;
