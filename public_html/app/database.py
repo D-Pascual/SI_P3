@@ -208,6 +208,29 @@ def db_add_to_cart(id, customerid, quantity):
         traceback.print_exc(file=sys.stderr)
         print("-"*60)
         return None
+    
+def db_comprarcarrito(userid):
+    try:
+        # conexion a la base de datos
+        db_conn = None
+        db_conn = db_engine.connect()
+        movies = []
+        query_carrito = "SELECT * FROM orders WHERE status is null and customerid={}".format(userid)
+        db_result = db_conn.execute(query_carrito)
+        row = db_result.fetchone()
+        print(row)
+        db_conn.close()
+
+        return movies
+    except:
+        if db_conn is not None:
+            db_conn.close()
+        print("Exception in DB access:")
+        print("-"*60)
+        traceback.print_exc(file=sys.stderr)
+        print("-"*60)
+
+        return 'Something is broken'
 
 
 def db_topMovies_last3years():
