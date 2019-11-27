@@ -21,3 +21,13 @@ where c3.username='tarp'
 
 SELECT * FROM customers --Encontrar users que contengan tarp en el username
 WHERE username LIKE '%tarp%'
+
+
+--Top peliculas ultimos 3 años
+SELECT p.movieid, movietitle, year, sum(sales) as sales
+FROM products p
+JOIN inventory iv ON p.prod_id = iv.prod_id
+JOIN imdb_movies im ON p.movieid = im.movieid
+GROUP BY p.movieid, movietitle, year
+ORDER BY sales DESC
+LIMIT 50;

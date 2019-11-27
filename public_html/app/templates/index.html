@@ -10,13 +10,22 @@
 
 {% block content %}
 <nav class="article">
-    {% for item in movies %}
-    <div class="foto">
-        <a href="{{ url_for('detalle', titulo=item.titulo) }}">
-            <img src="{{url_for('static', filename=item.poster)}}" alt={{ item.titulo }}>
-        </a> 
-        <br> {{ item.titulo }} 
-    </div>
+    <h1 id=top_movies>Top peliculas ultimos 3 años</h2>
+    <table>
+    <tr>
+        <th>Ranking</th>
+        <th>Titulo</th>
+        <th>Año</th>
+        <th>Ventas</th>
+    </tr>
+    {% for item in top_movies %}
+        <tr>
+            <td>{{ loop.index0 + 1}}</td>
+            <td>{{ item.movietitle }}</td>
+            <td>{{ item.year }}</td>
+            <td>{{ item.sales }}</td>
+        </tr>
     {% endfor %} 
+    </table>
 </nav>
 {% endblock %}
