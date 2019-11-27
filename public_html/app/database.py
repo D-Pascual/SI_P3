@@ -215,11 +215,31 @@ def db_comprarcarrito(userid):
         # conexion a la base de datos
         db_conn = None
         db_conn = db_engine.connect()
+        saldo = db_saldo(userid)
+        precioTotal = 0
+        query_carrito = "SELECT * FROM orders WHERE status is null and customerid = {}".format(userid)
+        db_result = db_conn.execute(query_carrito)
+        row = db_result.fetchone() #row[0] = orderid del carrito
+        query_carrito = "SELECT price FROM orderdetail WHERE orderid = {}".format(row[0]) #row[0] = orderid
+        db_result = db_conn.execute(query_carrito)
+        rowDetail = db_result.fetchone()
+        while rowDetail:
+            precioTotal += rowDetail[0] #precio
+            rowDetail = db_result.fetchone()
+        if saldo < precioTotal:
+            return None
+        else:
+            saldo -= precioTotal
         movies = []
         query_carrito = "SELECT * FROM orders WHERE status is null and customerid={}".format(userid)
         db_result = db_conn.execute(query_carrito)
         row = db_result.fetchone()
+        query_carrito = "SELECT * FROM orders WHERE status is null and customerid={}".format(userid)
+        db_result = db_conn.execute(query_carrito)
+        row = db_result.fetchone()
         query_carrito = "UPDATE orders SET status='Paid' WHERE orderid = {}".format(row[0])
+        db_result = db_conn.execute(query_carrito)
+        query_carrito = "UPDATE customers SET saldo={} WHERE customerid = {}".format(saldo, userid)
         db_result = db_conn.execute(query_carrito)
         db_conn.close()
         return True
@@ -286,7 +306,25 @@ def db_borrarelemento(userid, prod_id):
 
         return 'Something is broken'
 
+def db_saldo(id):
+    try:
+        # conexion a la base de datos
+        db_conn = None
+        db_conn = db_engine.connect()
+        #obtenemos el saldo del usuario
+        query_carrito = "SELECT saldo FROM customers WHERE customerid={}".format(id)
+        db_result = db_conn.execute(query_carrito)
+        row = db_result.fetchone()
+        return row[0]
+    except:
+        if db_conn is not None:
+            db_conn.close()
+        print("Exception in DB access:")
+        print("-"*60)
+        traceback.print_exc(file=sys.stderr)
+        print("-"*60)
 
+        return 'Something is broken'
 
 def db_topMovies_last3years():
     try:

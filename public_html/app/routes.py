@@ -20,6 +20,12 @@ import datetime
 @app.route('/index', methods=['POST', 'GET', 'PUT'])
 def index():
     top_last3years = database.db_topMovies_last3years()
+    if 'user_id' in session:
+        saldo = database.db_saldo(session['user_id'])
+        if saldo:
+            session['saldo'] = int(saldo)
+        else:
+            session['saldo'] = 0
 
     return render_template('index.html', title="Home", top_movies=top_last3years, session=session)
 
@@ -265,6 +271,9 @@ def borrarElemento(id):
 def comprarCarrito():
     if 'logged_in' in session:
         retorno = database.db_comprarcarrito(session['user_id'])
+        if not retorno:
+            flash('No tienes suficiente saldo')
+            return redirect(url_for('carrito'))
         flash('¡Carrito comprado!')
         return redirect(url_for('carrito'))
         # directorio = os.path.join(
