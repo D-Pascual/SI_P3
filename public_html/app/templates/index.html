@@ -17,6 +17,7 @@
         <th>Titulo</th>
         <th>Año</th>
         <th>Ventas</th>
+        <th></th>
     </tr>
     {% for item in top_movies %}
         <tr>
@@ -24,6 +25,7 @@
             <td>{{ item.movietitle }}</td>
             <td>{{ item.year }}</td>
             <td>{{ item.sales }}</td>
+            <td><button type="button" onclick="{{ url_for('add_to_cart', id=selection.id) }}">Añadir al carrito</button></td>
         </tr>
     {% endfor %} 
     </table>
