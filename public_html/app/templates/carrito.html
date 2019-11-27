@@ -14,7 +14,6 @@
                         <th>Titulo</th>
                         <th>Cantidad</th>
                         <th>Precio</th>
-                        <th>Compra</th>
                         <th>Borrar</th>
                     </tr>
                     {% for item in movies %}
@@ -22,11 +21,6 @@
                             <td>{{ item.titulo }}</td>
                             <td>{{ item.cantidad }}</td>
                             <td>{{ item.precio }}€</td>
-                            <td>
-                                <form action="{{ url_for('comprarElemento', id=item.id) }}">
-                                    <input type="submit" value="Comprar este articulo" />
-                                </form>
-                            </td>
                             <td>
                                 <form action="{{ url_for('borrarElemento', id=item.id) }}">
                                     <input type="submit" value="Borrar este elemento" />

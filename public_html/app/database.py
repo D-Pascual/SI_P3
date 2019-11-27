@@ -123,14 +123,15 @@ def db_carrito(userid):
         row = db_result.fetchone()
         if not row:
             return None
-        query_carrito = "SELECT movietitle, quantity, orderdetail.price FROM orderdetail INNER JOIN products ON orderdetail.prod_id = products.prod_id INNER JOIN imdb_movies ON products.movieid = imdb_movies.movieid WHERE orderid = {}".format(row[0]) #row[0] = orderid
+        query_carrito = "SELECT movietitle, quantity, orderdetail.price, products.prod_id FROM orderdetail INNER JOIN products ON orderdetail.prod_id = products.prod_id INNER JOIN imdb_movies ON products.movieid = imdb_movies.movieid WHERE orderid = {}".format(row[0]) #row[0] = orderid
         db_result = db_conn.execute(query_carrito)
         rowDetail = db_result.fetchone()
         while rowDetail:
             movie = {
                 "titulo": rowDetail[0],
                 "cantidad": rowDetail[1],
-                "precio": rowDetail[2]
+                "precio": rowDetail[2],
+                "id": rowDetail[3]
             }
             movies.append(movie)
             rowDetail = db_result.fetchone()
@@ -231,6 +232,60 @@ def db_comprarcarrito(userid):
         print("-"*60)
 
         return 'Something is broken'
+    
+def db_borrarcarrito(userid):
+    try:
+        # conexion a la base de datos
+        db_conn = None
+        db_conn = db_engine.connect()
+        movies = []
+        #obtenemos el carrito
+        query_carrito = "SELECT * FROM orders WHERE status is null and customerid={}".format(userid)
+        db_result = db_conn.execute(query_carrito)
+        row = db_result.fetchone()
+        #borramos los detalles del carrito
+        query_carrito = "DELETE FROM orderdetail WHERE orderid={}".format(row[0])
+        db_conn.execute(query_carrito)
+        #borramos el carrito
+        query_carrito = "DELETE FROM orders WHERE orderid={}".format(row[0])
+        db_conn.execute(query_carrito)
+        db_conn.close()
+        return True
+    except:
+        if db_conn is not None:
+            db_conn.close()
+        print("Exception in DB access:")
+        print("-"*60)
+        traceback.print_exc(file=sys.stderr)
+        print("-"*60)
+
+        return 'Something is broken'
+    
+def db_borrarelemento(userid, prod_id):
+    try:
+        # conexion a la base de datos
+        db_conn = None
+        db_conn = db_engine.connect()
+        movies = []
+        #obtenemos el carrito
+        query_carrito = "SELECT * FROM orders WHERE status is null and customerid={}".format(userid)
+        db_result = db_conn.execute(query_carrito)
+        row = db_result.fetchone()
+        #borramos los detalles del carrito
+        query_carrito = "DELETE FROM orderdetail WHERE orderid={} and prod_id={}".format(row[0], prod_id)
+        db_conn.execute(query_carrito)
+        db_conn.close()
+        return True
+    except:
+        if db_conn is not None:
+            db_conn.close()
+        print("Exception in DB access:")
+        print("-"*60)
+        traceback.print_exc(file=sys.stderr)
+        print("-"*60)
+
+        return 'Something is broken'
+
 
 
 def db_topMovies_last3years():

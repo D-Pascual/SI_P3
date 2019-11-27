@@ -268,6 +268,8 @@ def add_to_cart(id):
 
 @app.route('/borrarCarrito')
 def borrarCarrito():
+    if 'user_id' in session:
+        database.db_borrarcarrito(session['user_id'])
     session.pop('cart', None)
     session.modified = True
 
@@ -276,8 +278,11 @@ def borrarCarrito():
 
 @app.route('/borrarElemento/<id>')
 def borrarElemento(id):
-    session['cart'].remove(int(id))
-    session.modified = True
+    if 'user_id' in session:
+        database.db_borrarelemento(session['user_id'], id)
+    else:
+        session['cart'].remove(int(id))
+        session.modified = True
 
     return redirect(url_for('carrito'))
 
@@ -342,70 +347,6 @@ def comprarCarrito():
     else:
         flash('¡Para comprar debes estar logueado!')
         return redirect(url_for('sesion'))
-
-
-@app.route('/comprarElemento/<id>')
-def comprarElemento(id):
-    if 'logged_in' in session:
-        directorio = os.path.join(
-            app.root_path, 'usuarios', session['usuario'], 'datos.dat')
-        try:
-            with open(directorio, "r") as data_file:
-                data_dictionary = ast.literal_eval(data_file.read())
-        except IOError:
-            flash('¡El usuario no existe!')
-        catalogue_data = open(os.path.join(
-            app.root_path, 'catalogue/catalogo.json'), encoding="utf-8").read()
-        catalogue = json.loads(catalogue_data)
-        for x in catalogue['peliculas']:
-            if x['id'] == int(id):
-                pelicula = x
-        saldo = data_dictionary.get('saldo')
-        if saldo >= pelicula['precio']:
-
-            ids_in_cart = [int(id)]
-
-            historial_data = open(os.path.join(
-                app.root_path, 'usuarios', session['usuario'], 'historial.json'), encoding="utf-8").read()
-            historial = json.loads(historial_data)
-            datosHistorial = historial['historial']
-            idPedido = data_dictionary.get('nPedidos')
-            data = {
-                "id": idPedido,
-                "fecha": str(date.today()),
-                "precio": pelicula['precio'],
-                "peliculas": ids_in_cart
-            }
-            datosHistorial.append(data)
-
-            directorioHistorial = os.path.join(
-                app.root_path, 'usuarios', session['usuario'], 'historial.json')
-            file = open(directorioHistorial, "w")
-            json.dump({
-                "historial": datosHistorial}, file)
-            file.close()
-            session['cart'].remove(int(id))
-            session.modified = True
-            data_dictionary["saldo"] -= pelicula['precio']
-            session['total'] -= pelicula['precio']
-            data_dictionary["nPedidos"] += 1
-
-            directorio_datos = os.path.join(
-                app.root_path, 'usuarios', session['usuario'], 'datos.dat')
-            datos_file = open(directorio_datos, "w")
-            datos_file.write(str(data_dictionary))
-            datos_file.close()
-            session["saldo"] = data_dictionary["saldo"]
-
-            flash('¡Articulo comprado!')
-            return redirect(url_for('carrito'))
-        else:
-            flash('No tienes suficiente saldo. Haz click en saldo (navegador) para añadir más')
-            return redirect(url_for('carrito'))
-    else:
-        flash('¡Para comprar debes estar logueado!')
-        return redirect(url_for('sesion'))
-
 
 @app.route('/saldo')
 def saldo():
