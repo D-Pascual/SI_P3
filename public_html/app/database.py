@@ -117,7 +117,7 @@ def db_carrito():
         db_conn = None
         db_conn = db_engine.connect()
 
-        query_carrito = select([db_table_orders]).where(text("status is NULL"))
+        query_carrito = "SELECT * FROM orders WHERE status=null"
         db_result = db_conn.execute(query_carrito)
 
         db_conn.close()
@@ -134,18 +134,43 @@ def db_carrito():
         return 'Something is broken'
 
 
-def db_orderdetail_by_orderid():
+def db_orderdetail_by_orderid(id):
     try:
         # conexion a la base de datos
         db_conn = None
         db_conn = db_engine.connect()
 
-        query_orderdetail = select([db_table_orderdetail]).where(text(""))
+        query_carrito = "SELECT * FROM orderdetail WHERE orderid={}".format(id)
         db_result = db_conn.execute(query_carrito)
 
         db_conn.close()
 
         return  list(db_result)
+    except:
+        if db_conn is not None:
+            db_conn.close()
+        print("Exception in DB access:")
+        print("-"*60)
+        traceback.print_exc(file=sys.stderr)
+        print("-"*60)
+
+        return 'Something is broken'
+    
+def db_add_to_cart(id, customerid):
+    try:
+        # conexion a la base de datos
+        db_conn = None
+        db_conn = db_engine.connect()
+        
+        query_carrito = "SELECT * FROM orders WHERE status is null and customerid = "
+        db_result = db_conn.execute(query_carrito)
+        print(list(db_result))
+        if not list(db_result):
+            print('hola')
+            query_carrito = "INSERT INTO orders (orderid, orderdate) VALUES(99999999, NOW())"
+            db_result = db_conn.execute(query_carrito)
+        db_conn.close()
+        return list(db_result)
     except:
         if db_conn is not None:
             db_conn.close()

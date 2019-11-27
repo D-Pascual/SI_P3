@@ -200,8 +200,10 @@ def carrito():
     # session['total'] = precio
     # session.modified = True
     order = database.db_carrito()
-    details #seguir
-
+    movies = []
+    for m in movies:
+        print(database.db_orderdetail_by_orderid(m.orderid))
+    precio = 0
     return render_template("carrito.html", movies=movies, precio=precio)
 
 
@@ -246,6 +248,8 @@ def coleccion():
 def add_to_cart(id):
     if 'cart' not in session:
         session['cart'] = []
+    if 'user_id' in session:
+        print('resultado', database.db_add_to_cart(id, session['user_id']))
 
     catalogue_data = open(os.path.join(
         app.root_path, 'catalogue/catalogo.json'), encoding="utf-8").read()
