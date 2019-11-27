@@ -211,19 +211,28 @@ def db_add_to_cart(id, customerid, quantity):
 
 
 def db_topMovies_last3years():
-    statement = text("""SELECT p.movieid, movietitle, year, sum(sales) as sales
-                        FROM products p
-                        JOIN inventory iv ON p.prod_id = iv.prod_id
-                        JOIN imdb_movies im ON p.movieid = im.movieid
-                        GROUP BY p.movieid, movietitle, year
-                        ORDER BY sales DESC
-                        LIMIT 50;""")
+    try:
+        # conexion a la base de datos
+        db_conn = None
+        db_conn = db_engine.connect()
 
-    db_result = db_conn.execute(statement)
+        statement = text("""SELECT p.movieid, movietitle, year, sum(sales) as sales
+                            FROM products p
+                            JOIN inventory iv ON p.prod_id = iv.prod_id
+                            JOIN imdb_movies im ON p.movieid = im.movieid
+                            GROUP BY p.movieid, movietitle, year
+                            ORDER BY sales DESC
+                            LIMIT 50;""")
 
-    db_conn.close()
+        db_result = db_conn.execute(statement)
 
-    return  list(db_result)
+        db_conn.close()
 
-
-    return None
+        return  list(db_result)
+    except:
+        if db_conn is not None:
+            db_conn.close()
+        print("Exception in DB access:")
+        print("-"*60)
+        traceback.print_exc(file=sys.stderr)
+        print("-"*60)
