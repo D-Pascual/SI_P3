@@ -151,7 +151,7 @@ nav ul {
 .login {
     text-align: right;
     padding: 20px;
-    height: 65%;
+    height: 30%;
     width: 35%;
     min-width: 300px;
     position: absolute;
@@ -162,7 +162,7 @@ nav ul {
 .register {
     text-align: right;
     padding: 20px;
-    height: 65%;
+    height: 90%;
     width: 35%;
     min-width: 300px;
     position: absolute;

@@ -22,9 +22,5 @@ Info util:
     -Por que update..set..from en vez de update..set..(select..)
 
 -Hacer:
-    -usernames repetidos
     -saldo
     -Portada: top peliculas ultimos 3 años
-    -mejorar fecha registro
-    -manejar excepciones db
-    -arreglar css

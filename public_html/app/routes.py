@@ -13,6 +13,7 @@ from flask import flash
 import ast
 from datetime import date
 import random 
+import datetime
 
 
 @app.route('/', methods=['POST', 'GET', 'PUT'])
@@ -96,7 +97,8 @@ def registrar():
                    "edad": request.form['edad'],
                    "card_type": request.form['card_type'],
                    "tarjeta": request.form['tarjeta'],
-                   "caducidad_tarjeta": request.form['cardexpiration'],
+                   "caducidad_tarjeta": datetime.datetime.strptime(request.form['cardexpiration'],
+                                                                   '%Y-%m-%d').strftime('%Y%d%m')[2:],
                    "saldo":  randrange(101),
                    "nPedidos": 0}
         

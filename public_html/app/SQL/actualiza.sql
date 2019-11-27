@@ -1,4 +1,4 @@
--- Agrupados duplicados
+-- Agrupados duplicados orderdetail
 INSERT INTO public.orderdetail
 SELECT orderid, prod_id, price, SUM(quantity)
 FROM public.orderdetail
@@ -7,10 +7,10 @@ HAVING COUNT(*) > 1;
 
 DELETE FROM public.orderdetail
 WHERE orderid IN (
-SELECT orderid
-FROM public.orderdetail
-GROUP BY orderid, prod_id, price
-HAVING COUNT(*) > 1
+    SELECT orderid
+    FROM public.orderdetail
+    GROUP BY orderid, prod_id, price
+    HAVING COUNT(*) > 1
 );
 
 
@@ -54,3 +54,21 @@ LOCK TABLE customers IN EXCLUSIVE MODE;
 SELECT setval('customers_customerid_seq'::regclass, 
 	      COALESCE((SELECT MAX(customerid)+1 FROM customers), 1), false);
 COMMIT;
+
+--Usuarios duplicados cambiar username a username+id
+UPDATE public.customers AS q1
+SET username = CONCAT(q1.username,q1.customerid)
+FROM 
+    (SELECT c.customerid
+    FROM customers AS c
+    INNER JOIN
+        (SELECT username
+        FROM customers
+        GROUP BY username
+        HAVING COUNT(*) > 1) sub
+    ON c.username = sub.username) AS dupl
+WHERE q1.customerid = dupl.customerid;
+
+--Añadir clave unique a username
+ALTER TABLE public.customers 
+ADD CONSTRAINT customers_username_unique UNIQUE (username);
