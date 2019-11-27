@@ -285,57 +285,60 @@ def borrarElemento(id):
 @app.route('/comprarCarrito')
 def comprarCarrito():
     if 'logged_in' in session:
-        directorio = os.path.join(
-            app.root_path, 'usuarios', session['usuario'], 'datos.dat')
-        try:
-            with open(directorio, "r") as data_file:
-                data_dictionary = ast.literal_eval(data_file.read())
-        except IOError:
-            flash('¡El usuario no existe!')
-        saldo = data_dictionary.get('saldo')
-        if saldo >= session['total']:
-            catalogue_data = open(os.path.join(
-                app.root_path, 'catalogue/catalogo.json'), encoding="utf-8").read()
-            catalogue = json.loads(catalogue_data)
+        retorno = database.db_comprarcarrito(session['user_id'])
+        flash('¡Carrito comprado!')
+        return redirect(url_for('carrito'))
+        # directorio = os.path.join(
+        #     app.root_path, 'usuarios', session['usuario'], 'datos.dat')
+        # try:
+        #     with open(directorio, "r") as data_file:
+        #         data_dictionary = ast.literal_eval(data_file.read())
+        # except IOError:
+        #     flash('¡El usuario no existe!')
+        # saldo = data_dictionary.get('saldo')
+        # if saldo >= session['total']:
+        #     catalogue_data = open(os.path.join(
+        #         app.root_path, 'catalogue/catalogo.json'), encoding="utf-8").read()
+        #     catalogue = json.loads(catalogue_data)
 
-            ids_in_cart = session.get('cart', [])
+        #     ids_in_cart = session.get('cart', [])
 
-            historial_data = open(os.path.join(
-                app.root_path, 'usuarios', session['usuario'], 'historial.json'), encoding="utf-8").read()
-            historial = json.loads(historial_data)
-            datosHistorial = historial['historial']
-            id = data_dictionary.get('nPedidos')
-            data = {
-                "id": id,
-                "fecha": str(date.today()),
-                "precio": session['total'],
-                "peliculas": ids_in_cart
-            }
-            datosHistorial.append(data)
+        #     historial_data = open(os.path.join(
+        #         app.root_path, 'usuarios', session['usuario'], 'historial.json'), encoding="utf-8").read()
+        #     historial = json.loads(historial_data)
+        #     datosHistorial = historial['historial']
+        #     id = data_dictionary.get('nPedidos')
+        #     data = {
+        #         "id": id,
+        #         "fecha": str(date.today()),
+        #         "precio": session['total'],
+        #         "peliculas": ids_in_cart
+        #     }
+        #     datosHistorial.append(data)
 
-            directorioHistorial = os.path.join(
-                app.root_path, 'usuarios', session['usuario'], 'historial.json')
-            file = open(directorioHistorial, "w")
-            json.dump({
-                "historial": datosHistorial}, file)
-            file.close()
-            session.pop('cart', None)
-            session.modified = True
-            data_dictionary["saldo"] -= session['total']
-            data_dictionary["nPedidos"] += 1
+        #     directorioHistorial = os.path.join(
+        #         app.root_path, 'usuarios', session['usuario'], 'historial.json')
+        #     file = open(directorioHistorial, "w")
+        #     json.dump({
+        #         "historial": datosHistorial}, file)
+        #     file.close()
+        #     session.pop('cart', None)
+        #     session.modified = True
+        #     data_dictionary["saldo"] -= session['total']
+        #     data_dictionary["nPedidos"] += 1
 
-            directorio_datos = os.path.join(
-                app.root_path, 'usuarios', session['usuario'], 'datos.dat')
-            datos_file = open(directorio_datos, "w")
-            datos_file.write(str(data_dictionary))
-            datos_file.close()
-            session["saldo"] = data_dictionary["saldo"]
+        #     directorio_datos = os.path.join(
+        #         app.root_path, 'usuarios', session['usuario'], 'datos.dat')
+        #     datos_file = open(directorio_datos, "w")
+        #     datos_file.write(str(data_dictionary))
+        #     datos_file.close()
+        #     session["saldo"] = data_dictionary["saldo"]
 
-            flash('¡Carrito comprado!')
-            return redirect(url_for('carrito'))
-        else:
-            flash('No tienes suficiente saldo. Haz click en saldo (barra lateral) para añadir más')
-            return redirect(url_for('carrito'))
+        #     flash('¡Carrito comprado!')
+        #     return redirect(url_for('carrito'))
+        # else:
+        #     flash('No tienes suficiente saldo. Haz click en saldo (barra lateral) para añadir más')
+        #     return redirect(url_for('carrito'))
     else:
         flash('¡Para comprar debes estar logueado!')
         return redirect(url_for('sesion'))
