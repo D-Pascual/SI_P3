@@ -24,10 +24,12 @@ WHERE username LIKE '%tarp%'
 
 
 --Top peliculas ultimos 3 años
-SELECT p.movieid, movietitle, year, sum(sales) as sales
+SELECT p.prod_id, p.movieid, movietitle, description, year, sum(quantity) as sales
 FROM products p
-JOIN inventory iv ON p.prod_id = iv.prod_id
 JOIN imdb_movies im ON p.movieid = im.movieid
-GROUP BY p.movieid, movietitle, year
+JOIN orderdetail od ON p.prod_id = od.prod_id
+JOIN orders o ON od.orderid = o.orderid
+WHERE (extract(year FROM o.orderdate) > (extract(year FROM now()) - 3))
+GROUP BY p.prod_id, description, movietitle, year
 ORDER BY sales DESC
 LIMIT 50;

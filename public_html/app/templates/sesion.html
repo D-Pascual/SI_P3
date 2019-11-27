@@ -1,21 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <title>Sesión - VideoClub</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Uso de url_for para obtener la ruta de elementos de la página -->
-  <link rel="stylesheet" type="text/css" href={{ url_for('static', filename='style.css') }}/>
+{% extends "base.html" %} 
+{% block title %} 
+    {{ title }} 
+{% endblock%} 
+{% block head %} 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
   <script src={{ url_for('static', filename='js/validar.js') }}></script>
   <script src={{ url_for('static', filename='js/passStrenght.js') }}></script>
   <script src={{ url_for('static', filename='js/futureDatesOnly.js') }}></script>
-</head>
-
-<body>
-  <header>
-      <h1><a href="{{ url_for('index') }}"><img class ="logo" src={{ url_for('static', filename='imagenes/logo.png') }} alt="Logo"/></a>Sesión</h1>
-  </header>
+    Sesion
+{% endblock %} 
+{% block content %}
 
   {% with messages = get_flashed_messages() %}
       {% if messages %}
@@ -27,8 +21,6 @@
       {% endif %}
   {% endwith %}
 
-  <div class = "page-container">
-    <div class = "content-wrap">
       <div class="login">
         <form action="{{ url_for('login') }}" name="login" method="post">
           <fieldset>
@@ -51,6 +43,9 @@
         <form action="{{ url_for('registrar') }}" name="registro" method="post" onsubmit="return validarRegistro()">
           <fieldset>
             <legend>Registrarse</legend>
+          <div class="row">
+          <div class="column">
+          <div class="register1">
             Usuario:
             <input required type="text" name="usuario" placeholder="Escribe aquí" pattern="[^()/><\][\\\x22,;|]+" 
               title="No se puede dejar en blanco, ni usar estos carácteres prohibidos: ^()/><\\\\x22,;|"><br><br>
@@ -77,6 +72,10 @@
             <span id = "mensaje"></span><br><br>
             Confirmación de contraseña:
             <input required type="password" name="conf_password" placeholder="Escribe aquí" maxlength="50"><br><br>
+            </div>
+            </div>
+            <div class="column">
+            <div class="register2">
             Email:
             <input required type="email" name="email" placeholder="email@example.com"><br><br>
             Género:
@@ -97,15 +96,10 @@
             Caducidad tarjeta de credito:
             <input required type="date" name="cardexpiration" id="cardexpiration"><br><br>
             <input type="submit" class="busqueda" value="Registrarse" />
+            </div>
           </fieldset>
         </form>
-      </div>
-    </div>
-
-    <footer class = "foot">
-      <p>David y Alain ®</p>
-    </footer>
   </div>
-</body>
-
-</html>
+</div>
+    </div>
+{% endblock %}
