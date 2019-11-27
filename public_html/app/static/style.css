@@ -313,7 +313,7 @@ tr:nth-child(even) {
 	border-style: double;
 }
 
-<<<<<<< head ======= #top_movies {
+#top_movies {
 	text-align: center;
 	font-family: "Courier New", Times, serif;
 	font-size: 22px;
@@ -324,7 +324,7 @@ tr:nth-child(even) {
 	text-shadow: 1px 1px grey;
 }
 
->>>>>>> 4a3b7a269de223c6b19210d871f88ceba00ed341
+
 /* Responsive layout - makes the two columns/boxes stack on top of each other instead of next to each other, on small screens */
 
 @media (max-width: 600px) {

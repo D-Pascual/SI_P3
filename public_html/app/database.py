@@ -294,13 +294,15 @@ def db_topMovies_last3years():
         db_conn = None
         db_conn = db_engine.connect()
 
-        statement = text("""SELECT p.movieid, movietitle, year, sum(sales) as sales
+        statement = text("""SELECT p.prod_id, p.movieid, movietitle, description, year, sum(quantity) as sales
                             FROM products p
-                            JOIN inventory iv ON p.prod_id = iv.prod_id
                             JOIN imdb_movies im ON p.movieid = im.movieid
-                            GROUP BY p.movieid, movietitle, year
+                            JOIN orderdetail od ON p.prod_id = od.prod_id
+                            JOIN orders o ON od.orderid = o.orderid
+                            WHERE (extract(year FROM o.orderdate) > (extract(year FROM now()) - 3))
+                            GROUP BY p.prod_id, description, movietitle, year
                             ORDER BY sales DESC
-                            LIMIT 50;""")
+                            LIMIT 30;""")
 
         db_result = db_conn.execute(statement)
 

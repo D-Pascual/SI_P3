@@ -15,15 +15,18 @@
     <tr>
         <th>Ranking</th>
         <th>Titulo</th>
-        <th>Año</th>
+        <th>Edicion</th>
         <th>Ventas</th>
+        <th></th>
     </tr>
     {% for item in top_movies %}
         <tr>
             <td>{{ loop.index0 + 1}}</td>
             <td>{{ item.movietitle }}</td>
-            <td>{{ item.year }}</td>
+            <td>{{ item.description }}</td>
             <td>{{ item.sales }}</td>
+            <form action="{{ url_for('add_to_cart', id=item.prod_id) }}">
+            <td><button type="submit">Añadir al carrito</button></td>
         </tr>
     {% endfor %} 
     </table>
