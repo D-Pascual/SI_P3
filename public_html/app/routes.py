@@ -116,7 +116,6 @@ def logout(user):
     if 'logged_in' in session:
         session.pop('usuario', None)
         session.pop('logged_in', None)
-        session.pop('user_id', None)
         session.pop('saldo', None)
         session.modified = True
     else:
