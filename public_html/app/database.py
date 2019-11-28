@@ -95,7 +95,8 @@ def db_registro(usuario):
                             "age": usuario['edad'],
                             "creditcardtype": usuario['card_type'],
                             "creditcard": usuario['tarjeta'],
-                            "creditcardexpiration": usuario['caducidad_tarjeta']})
+                            "creditcardexpiration": usuario['caducidad_tarjeta'],
+                            "saldo": usuario['saldo']})
 
         db_conn.execute(stmt)
 
@@ -112,6 +113,35 @@ def db_registro(usuario):
         return 'Something is broken'
 
 
+def db_user_id_by_username(username):
+    try:
+        # conexion a la base de datos
+        db_conn = None
+        db_conn = db_engine.connect()
+
+        query = select([db_table_customers.c.customerid]) \
+                                        .where(text("username = :username"))
+        db_result = db_conn.execute(query, {'username': username})
+
+        db_conn.close()
+
+        row = db_result.fetchone()
+        if row: # Si la query no esta vacia
+            return row[0] # Devuelve usuario
+        else:
+            return None
+
+    except:
+        if db_conn is not None:
+            db_conn.close()
+        print("Exception in DB access:")
+        print("-"*60)
+        traceback.print_exc(file=sys.stderr)
+        print("-"*60)
+
+        return None
+
+
 def db_carrito(userid):
     try:
         # conexion a la base de datos
@@ -123,14 +153,15 @@ def db_carrito(userid):
         row = db_result.fetchone()
         if not row:
             return None
-        query_carrito = "SELECT movietitle, quantity, orderdetail.price FROM orderdetail INNER JOIN products ON orderdetail.prod_id = products.prod_id INNER JOIN imdb_movies ON products.movieid = imdb_movies.movieid WHERE orderid = {}".format(row[0]) #row[0] = orderid
+        query_carrito = "SELECT movietitle, quantity, orderdetail.price, products.prod_id FROM orderdetail INNER JOIN products ON orderdetail.prod_id = products.prod_id INNER JOIN imdb_movies ON products.movieid = imdb_movies.movieid WHERE orderid = {}".format(row[0]) #row[0] = orderid
         db_result = db_conn.execute(query_carrito)
         rowDetail = db_result.fetchone()
         while rowDetail:
             movie = {
                 "titulo": rowDetail[0],
                 "cantidad": rowDetail[1],
-                "precio": rowDetail[2]
+                "precio": rowDetail[2],
+                "id": rowDetail[3]
             }
             movies.append(movie)
             rowDetail = db_result.fetchone()
@@ -214,11 +245,31 @@ def db_comprarcarrito(userid):
         # conexion a la base de datos
         db_conn = None
         db_conn = db_engine.connect()
+        saldo = db_saldo(userid)
+        precioTotal = 0
+        query_carrito = "SELECT * FROM orders WHERE status is null and customerid = {}".format(userid)
+        db_result = db_conn.execute(query_carrito)
+        row = db_result.fetchone() #row[0] = orderid del carrito
+        query_carrito = "SELECT price FROM orderdetail WHERE orderid = {}".format(row[0]) #row[0] = orderid
+        db_result = db_conn.execute(query_carrito)
+        rowDetail = db_result.fetchone()
+        while rowDetail:
+            precioTotal += rowDetail[0] #precio
+            rowDetail = db_result.fetchone()
+        if saldo < precioTotal:
+            return None
+        else:
+            saldo -= precioTotal
         movies = []
         query_carrito = "SELECT * FROM orders WHERE status is null and customerid={}".format(userid)
         db_result = db_conn.execute(query_carrito)
         row = db_result.fetchone()
+        query_carrito = "SELECT * FROM orders WHERE status is null and customerid={}".format(userid)
+        db_result = db_conn.execute(query_carrito)
+        row = db_result.fetchone()
         query_carrito = "UPDATE orders SET status='Paid' WHERE orderid = {}".format(row[0])
+        db_result = db_conn.execute(query_carrito)
+        query_carrito = "UPDATE customers SET saldo={} WHERE customerid = {}".format(saldo, userid)
         db_result = db_conn.execute(query_carrito)
         db_conn.close()
         return True
@@ -231,29 +282,111 @@ def db_comprarcarrito(userid):
         print("-"*60)
 
         return 'Something is broken'
+    
+def db_borrarcarrito(userid):
+    try:
+        # conexion a la base de datos
+        db_conn = None
+        db_conn = db_engine.connect()
+        movies = []
+        #obtenemos el carrito
+        query_carrito = "SELECT * FROM orders WHERE status is null and customerid={}".format(userid)
+        db_result = db_conn.execute(query_carrito)
+        row = db_result.fetchone()
+        #borramos los detalles del carrito
+        query_carrito = "DELETE FROM orderdetail WHERE orderid={}".format(row[0])
+        db_conn.execute(query_carrito)
+        #borramos el carrito
+        query_carrito = "DELETE FROM orders WHERE orderid={}".format(row[0])
+        db_conn.execute(query_carrito)
+        db_conn.close()
+        return True
+    except:
+        if db_conn is not None:
+            db_conn.close()
+        print("Exception in DB access:")
+        print("-"*60)
+        traceback.print_exc(file=sys.stderr)
+        print("-"*60)
 
+        return 'Something is broken'
+    
+def db_borrarelemento(userid, prod_id):
+    try:
+        # conexion a la base de datos
+        db_conn = None
+        db_conn = db_engine.connect()
+        movies = []
+        #obtenemos el carrito
+        query_carrito = "SELECT * FROM orders WHERE status is null and customerid={}".format(userid)
+        db_result = db_conn.execute(query_carrito)
+        row = db_result.fetchone()
+        #borramos los detalles del carrito
+        query_carrito = "DELETE FROM orderdetail WHERE orderid={} and prod_id={}".format(row[0], prod_id)
+        db_conn.execute(query_carrito)
+        db_conn.close()
+        return True
+    except:
+        if db_conn is not None:
+            db_conn.close()
+        print("Exception in DB access:")
+        print("-"*60)
+        traceback.print_exc(file=sys.stderr)
+        print("-"*60)
+
+        return 'Something is broken'
+
+def db_saldo(id):
+    try:
+        # conexion a la base de datos
+        db_conn = None
+        db_conn = db_engine.connect()
+        #obtenemos el saldo del usuario
+        query_carrito = "SELECT saldo FROM customers WHERE customerid={}".format(id)
+        db_result = db_conn.execute(query_carrito)
+        row = db_result.fetchone()
+        return row[0]
+    except:
+        if db_conn is not None:
+            db_conn.close()
+        print("Exception in DB access:")
+        print("-"*60)
+        traceback.print_exc(file=sys.stderr)
+        print("-"*60)
+
+        return None
 
 def db_topMovies_last3years():
     try:
         # conexion a la base de datos
         db_conn = None
         db_conn = db_engine.connect()
-
-        statement = text("""SELECT p.prod_id, p.movieid, movietitle, description, year, sum(quantity) as sales
+        movies = []
+        statement = text("""SELECT p.prod_id, p.movieid, movietitle, description, year, sum(quantity) as sales, p.price
                             FROM products p
                             JOIN imdb_movies im ON p.movieid = im.movieid
                             JOIN orderdetail od ON p.prod_id = od.prod_id
                             JOIN orders o ON od.orderid = o.orderid
-                            WHERE (extract(year FROM o.orderdate) > (extract(year FROM now()) - 3))
+                            WHERE (extract(year FROM o.orderdate) > (extract(year FROM now()) - 3)) AND o.status is not NULL
                             GROUP BY p.prod_id, description, movietitle, year
                             ORDER BY sales DESC
                             LIMIT 30;""")
 
         db_result = db_conn.execute(statement)
-
+        row = db_result.fetchone()
+        while row:
+            movie = {
+                "titulo": row[2],
+                "edicion": row[3],
+                "ventas": row[5],
+                "precio": row[6],
+                "prod_id": row[0]
+            }
+            movies.append(movie)
+            row = db_result.fetchone()
         db_conn.close()
 
-        return  list(db_result)
+        return movies
     except:
         if db_conn is not None:
             db_conn.close()

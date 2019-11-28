@@ -1,3 +1,8 @@
+-- Añadir columna saldo a customers
+ALTER TABLE customers
+ADD COLUMN saldo numeric DEFAULT CAST(random()*100 as INTEGER);
+UPDATE customers SET saldo=CAST(random()*100 as INTEGER);
+
 -- Agrupados duplicados orderdetail
 INSERT INTO public.orderdetail
 SELECT orderid, prod_id, price, SUM(quantity)
@@ -103,7 +108,3 @@ WITH (
 );
 ALTER TABLE public.alertas
   OWNER TO alumnodb;
-
-UPDATE alertas
-SET alertas.prod_id = products.prod_id
-FROM products

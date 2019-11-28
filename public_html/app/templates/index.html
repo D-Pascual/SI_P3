@@ -16,17 +16,20 @@
         <th>Ranking</th>
         <th>Titulo</th>
         <th>Edicion</th>
+        <th>Precio</th>
         <th>Ventas</th>
         <th></th>
     </tr>
     {% for item in top_movies %}
         <tr>
             <td>{{ loop.index0 + 1}}</td>
-            <td>{{ item.movietitle }}</td>
-            <td>{{ item.description }}</td>
-            <td>{{ item.sales }}</td>
+            <td>{{ item.titulo }}</td>
+            <td>{{ item.edicion }}</td>
+            <td>{{ item.precio }}€</td>
+            <td>{{ item.ventas }}</td>
             <form action="{{ url_for('add_to_cart', id=item.prod_id) }}">
             <td><button type="submit">Añadir al carrito</button></td>
+            </form>
         </tr>
     {% endfor %} 
     </table>

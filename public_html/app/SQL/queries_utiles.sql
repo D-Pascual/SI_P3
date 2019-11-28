@@ -29,7 +29,7 @@ FROM products p
 JOIN imdb_movies im ON p.movieid = im.movieid
 JOIN orderdetail od ON p.prod_id = od.prod_id
 JOIN orders o ON od.orderid = o.orderid
-WHERE (extract(year FROM o.orderdate) > (extract(year FROM now()) - 3))
+WHERE (extract(year FROM o.orderdate) > (extract(year FROM now()) - 3)) AND o.status is not NULL
 GROUP BY p.prod_id, description, movietitle, year
 ORDER BY sales DESC
 LIMIT 50;

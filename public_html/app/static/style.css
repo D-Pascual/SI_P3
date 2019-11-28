@@ -146,26 +146,25 @@ nav ul {
 }
 
 .login {
-	text-align: right;
-	padding: 20px;
-	height: 25%;
-	width: 75%;
-	min-width: 300px;
-	position: absolute;
-	left: 20%;
-	background-color: #c1c1c1;
+    text-align: right;
+    padding: 20px;
+    height: 30%;
+    width: 35%;
+    min-width: 300px;
+    position: absolute;
+    left: 15%;
+    background-color: #C1C1C1;
 }
 
 .register {
-	text-align: right;
-	padding: 20px;
-	height: 73%;
-	width: 75%;
-	min-width: 300px;
-	position: absolute;
-	top: 55%;
-	left: 20%;
-	background-color: #c1c1c1;
+    text-align: right;
+    padding: 20px;
+    height: 90%;
+    width: 35%;
+    min-width: 300px;
+    position: absolute;
+    left: 51%;
+    background-color: #C1C1C1;
 }
 
 .register1 {
